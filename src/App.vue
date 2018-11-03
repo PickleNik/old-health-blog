@@ -12,9 +12,12 @@
         </v-layout>
       </v-flex>
       <v-flex md3 lg2 class="zoom hidden-sm-and-down pa-4" style="position:fixed; z-index: 100; right:0; top:0;">
-        <span v-if="status">user: {{ this.user.name }}</span>
-        <v-tooltip bottom color="pink" v-if="!status"><span class="text--text">Log in with Google</span><v-btn large slot="activator" color="pink" fab flat id="b1" @click="GoogleSignIn" :loading="loading"><v-icon large>fab fa-google</v-icon></v-btn></v-tooltip>
-        <v-btn round color="pink" @click="SignOut" v-if="status">Log out</v-btn>
+        <v-tooltip bottom color="pink" v-if="!user"><span class="text--text">Log in with Google</span><v-btn class="ma-2" large slot="activator" color="pink" fab flat id="b1" @click="GoogleSignIn" :loading="loading"><v-icon large>fab fa-google</v-icon></v-btn></v-tooltip>
+        <v-tooltip bottom color="pink" v-if="user"><span class="text--text text-xs-center">{{ user.name }}<br><v-divider class="white my-2"></v-divider>Logout</span>
+          <v-avatar slot="activator" color="white" class="ma-2" @click="Logout" size="72">
+             <img :src="user.photo" alt="alt">
+          </v-avatar>
+        </v-tooltip>
       </v-flex>
       <v-layout row wrap>
         <v-flex xs12 sm12 class="text-xs-center mb-5">
@@ -77,7 +80,7 @@
                 </social-sharing>
               </v-layout>
               <v-divider></v-divider>
-              <v-flex v-if="p.video" class="pt-2 video"><iframe :src="p.video" id="videoframe" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
+              <v-flex v-if="p.video" class="mt-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
               <p v-if="p.text" class="pt-2 px-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
               <a v-if="p.links" v-for="link in p.links" :key="link.title" :href="link.href" target="_blank"><v-btn small round flat class="link link--kukuri"><v-icon left class="pink--text">link</v-icon>{{ link.title }}</v-btn></a>
               <v-text-field class="pt-4" color="pink" placeholder="Comment" background-color="grey darken-3" solo prepend-inner-icon="comment" append-icon="send"></v-text-field>
@@ -137,7 +140,7 @@ export default {
         { name: 'About', href: '#post1', icon: 'assignment' },
         { name: 'Quiz', href: '#post2', icon: 'assignment_turned_in' },
         { name: 'Video', href: '#post3', icon: 'video_library' },
-        { name: 'Article', hrey: '#post4', icon: 'library_books' }
+        { name: 'Article', href: '#post4', icon: 'library_books' }
       ]
     }
   },
@@ -164,8 +167,8 @@ export default {
       this.$store.dispatch('userProvider', new firebase.auth.GoogleAuthProvider())
       .then(this.status = true)
     },
-    SignOut () {
-      this.$store.dispatch('SignOut')
+    Logout () {
+      this.$store.dispatch('userLogout')
     }
   }
 }
@@ -181,9 +184,6 @@ export default {
 html{
   background: black;
 }
-body{
-  background: black;  
-}
 a {
   text-decoration: none !important;
 }
@@ -193,7 +193,7 @@ a {
 .video {
   z-index: 9;
 	position: relative;
-	padding-bottom: 56.25%; /* 16:9 */
+	padding-bottom: 57%; /* 16:9 */
 	padding-top: 25px;
 	height: 0;
 }
@@ -204,10 +204,13 @@ a {
 	width: 100%;
 	height: 100%;
 }
-html{
+iframe {
+    border: 2em solid #fff;
+    border-radius: 2em !important;
+}
+body{
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  height: 100vh;
 }
 .head{
   position: relative;
@@ -305,22 +308,22 @@ html{
   font-family: 'Indie Flower', sans-serif;
   font-size: 3em;
   opacity: 0;
-  animation: fadeInDown 1s ease 1 forwards;
+  animation: fadeInDown 1s 1s ease 1 forwards;
 }
 #face{
   opacity: 0;
   height: 30vh;
   width: 30vh;
   border-radius: 100%;
-  animation: rollIn 1s 0.5s ease 1 forwards;
+  animation: rollIn 1s 1.5s ease 1 forwards;
 }
 #info{
   opacity: 0;
-  animation: lightSpeedIn 1s 1s ease 1 forwards;
+  animation: lightSpeedIn 1s 1.5s ease 1 forwards;
 }
 .post{
   opacity:0;
-  animation: fadeInUp 1s 1.5s ease 1 forwards;
+  animation: fadeInUp 1s 2s ease 1 forwards;
 }
 .zoom{
   opacity:0;

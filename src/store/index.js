@@ -22,6 +22,20 @@ export const store = new Vuex.Store({
     },
     setError (state, payload) {
       state.error = payload
+    },
+    addComment (state, payload) {
+      const src = payload.src
+      if (state.user.comments.findIndex(source => source === src) >= 0) {
+        return null
+      } else {
+        state.user.comments.push(src)
+        state.user.fbKeys[src.link] = payload.fbKey
+      }
+    },
+    removeComment (state, payload) {
+      const comments = state.user.comments
+      comments.splice(comments.findIndex(source => source === payload), 1)
+      Reflect.deleteProperty(state.user.fbKeys, payload.link)
     }
   },
   actions: {
@@ -50,36 +64,19 @@ export const store = new Vuex.Store({
           }
         )
     },
-    userFetch ({commit}, payload) {
-      commit('setLoading', true)
-      firebase.database().ref('/users/' + payload.id + '/comments/').once('value')
-      .then(data => {
-        const dataPairs = data.val()
-        let swappedPairs = {}
-        let comments = []
-        for (let key in dataPairs) {
-          comments.push(dataPairs[key])
-          dataPairs[key].todo = true
-          swappedPairs[dataPairs[key].link] = key
-        }
-        const updatedUser = {
-          id: payload.id,
-          email: payload.email,
-          name: payload.name,
-          comments: comments,
-          fbKeys: swappedPairs
-        }
-        commit('setLoading', false)
-        commit('setUser', updatedUser)
-      })
-
-      .catch(error => {
-        commit('setLoading', false)
-        commit('setError', error.message)
+    userAuto ({commit}, payload) {
+      commit('setUser', {
+        id: payload.uid,
+        email: payload.email,
+        name: payload.displayName,
+        photo: payload.photoURL,
+        comments: [],
+        fbKeys: {}
       })
     },
     userLogout ({commit}) {
       firebase.auth().signOut()
+      commit('setLoading', false)
       commit('setUser', null)
     }
   },

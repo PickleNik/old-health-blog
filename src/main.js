@@ -58,7 +58,7 @@ new Vue({
     })
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        this.$store.dispatch('userFetch', user)
+        this.$store.dispatch('userAuto', user)
       }
     })
   }
