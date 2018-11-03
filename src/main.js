@@ -15,6 +15,20 @@ import Sharing from 'vue-social-sharing'
 
 Vue.use(Sharing)
 
+var Vue = require('vue');
+var VueScrollTo = require('vue-scrollto');
+Vue.use(VueScrollTo, {
+  container: 'body',
+  duration: 333,
+  easing: 'ease',
+  offset: 0,
+  cancelable: true,
+  onDone: false,
+  onCancel: false,
+  x: false,
+  y: true
+})
+
 Vue.use(Vuetify, {
   iconfont: 'fa'
 })
