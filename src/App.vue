@@ -178,6 +178,12 @@ export default {
 *{
   font-family: 'Quicksand', sans-serif;
 }
+html{
+  background: black;
+}
+body{
+  background: black;  
+}
 a {
   text-decoration: none !important;
 }
