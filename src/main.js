@@ -15,14 +15,15 @@ import Sharing from 'vue-social-sharing'
 
 Vue.use(Sharing)
 
-var Vue = require('vue');
-var VueScrollTo = require('vue-scrollto');
+var VueScrollTo = require('vue-scrollto')
 Vue.use(VueScrollTo, {
   container: 'body',
   duration: 333,
   easing: 'ease',
   offset: 0,
+  force: true,
   cancelable: true,
+  onStart: false,
   onDone: false,
   onCancel: false,
   x: false,
@@ -30,7 +31,10 @@ Vue.use(VueScrollTo, {
 })
 
 Vue.use(Vuetify, {
-  iconfont: 'fa'
+  iconfont: 'fa',
+  theme: {
+    black: '#222222'
+  }
 })
 
 Vue.config.productionTip = false
