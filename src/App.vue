@@ -21,14 +21,15 @@
           <v-layout column>
             <h1 id="title" class="white--text mt-5">Health Fair Blog</h1>
             <a class="mt-5" href="https://www.linkedin.com/in/picklenik/"><img id="face" src="./assets/me.jpg"></a>
-            <span id="info"><i><h1> by Nikita Krupin</h1></i></span>
+            <span id="info"><i><h2> by Nikita Krupin</h2></i>
+            Junior @ WJHS</span>
           </v-layout>
         </v-flex>
         <v-flex xs12 sm12 md6 offset-md3 lg8 offset-lg2 class="post">
           <v-layout column>
             <v-flex v-for="p in posts" :key="p.id" :id="p.id" class="my-4 px-4 round black">
-              <v-layout row class="py-4">
-                <h1 class="grey--text pt-3">{{ p.title }}</h1>
+              <v-layout row class="py-4 pl-4">
+                <span class="grey--text pt-3" style="font-size: 2em; font-family: 'Indie Flower', sans-serif;">{{ p.title }}</span>
                 <v-spacer></v-spacer>
                 <social-sharing inline-template
                   :url="'https://health-fair.firebaseapp.com#' + p.id"
@@ -39,7 +40,7 @@
                     <v-icon>share</v-icon>
                     <v-icon>close</v-icon>
                   </v-btn>
-                  <v-btn fab dark small color="grey">
+                  <v-btn fab dark small color="grey" class="hidden-sm-and-down" v-clipboard:copy="'https://health-fair.firebaseapp.com#' + p.id">
                     <v-icon>faa fa-copy</v-icon>
                   </v-btn>
                   <v-btn fab dark small color="light-blue">
@@ -52,22 +53,22 @@
                       <v-icon>fab fa-facebook-f</v-icon>
                     </network>
                   </v-btn>
-                  <v-btn fab dark small color="blue darken-1">
+                  <v-btn fab dark small color="blue darken-1" class="hidden-sm-and-down">
                     <network network="linkedin">
                       <v-icon>fab fa-linkedin-in</v-icon>
                     </network>
                   </v-btn>
-                  <v-btn fab dark small color="green">
+                  <v-btn fab dark small color="green" class="hidden-md-and-up">
                     <network network="whatsapp">
                       <v-icon>fab fa-whatsapp</v-icon>
                     </network>
                   </v-btn>
-                  <v-btn fab dark small color="pink">
+                  <v-btn fab dark small color="pink" class="hidden-sm-and-down">
                     <network network="pinterest">
                       <v-icon>fab fa-pinterest-p</v-icon>
                     </network>
                   </v-btn>
-                  <v-btn fab dark small color="red">
+                  <v-btn fab dark small color="red" class="hidden-sm-and-down">
                     <network network="googleplus">
                       <v-icon>fab fa-google-plus-g</v-icon>
                     </network>
@@ -76,9 +77,10 @@
                 </social-sharing>
               </v-layout>
               <v-divider></v-divider>
-              <v-flex v-if="p.video" class="video"><iframe :src="p.video" id="videoframe" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
-              <p class="py-2 text-xs-justify" style="font-size: 1.3em;">{{ p.text }}</p>
-              <v-text-field color="pink" placeholder="Comment" background-color="grey darken-3" solo prepend-inner-icon="comment" append-icon="send"></v-text-field>
+              <v-flex v-if="p.video" class="pt-2 video"><iframe :src="p.video" id="videoframe" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
+              <p v-if="p.text" class="pt-2 px-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
+              <a v-if="p.links" v-for="link in p.links" :key="link.title" :href="link.href" target="_blank"><v-btn small round flat class="link link--kukuri"><v-icon left class="pink--text">link</v-icon>{{ link.title }}</v-btn></a>
+              <v-text-field class="pt-4" color="pink" placeholder="Comment" background-color="grey darken-3" solo prepend-inner-icon="comment" append-icon="send"></v-text-field>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -97,15 +99,45 @@ export default {
       direction: 'bottom',
       status: false,
       posts: [
-        { title: 'What is MDMA', fab: false, id: 'post1', text: '3,4-Methyl​enedioxy​methamphetamine, commonly known as ecstasy, is a psychoactive drug primarily used as a recreational drug. The desired effects include altered sensations and increased energy, empathy, and pleasure. When taken by mouth, effects begin after 30–45 minutes and last 3–6 hours.' },
-        { title: 'Quiz link', fab: false, id: 'post2' },
-        { title: 'Video about MDMA effect', fab: false, id: 'post3', video: 'https://www.youtube.com/embed/jEAr7ThsYew' }
+        {
+          title: 'What is Molly',
+          fab: false,
+          id: 'post1',
+          text: '3,4-Methyl​enedioxy​methamphetamine(or MDMA), commonly known as ecstasy, is a psychoactive drug primarily used as a recreational drug. The desired effects include altered sensations and increased energy, empathy, and pleasure. When taken by mouth, effects begin after 30–45 minutes and last 3–6 hours.',
+          links: [
+            { title: 'Outline', href: 'https://docs.google.com/document/d/1iZa7Gf0W3FIoVVw-vEPF_gbyCfb3pTEAJkVRuuvI--A/edit?usp=sharing' }
+          ]
+        },
+        {
+          title: 'Quiz',
+          fab: false,
+          id: 'post2',
+          text: 'Tip of the day: Ecstasy, in fact, is a term for Molly which has been chemically altered with other additives, such as amphetamine, caffeine etc.',
+          links: [
+            { title: 'Quiz', href: 'https://www.justthinktwice.gov/quiz/quiz-ecstasy-and-mdma' },
+            { title: 'Source 1', href: 'https://www.drugabuse.gov/publications/drugfacts/mdma-ecstasymolly' },
+            { title: 'Source 2', href: 'https://teens.drugabuse.gov/drug-facts/mdma-ecstasy-or-molly' },
+            { title: 'Source 3', href: 'https://abovetheinfluence.com/drugs/mdma/' }
+          ]
+        },
+        {
+          title: 'Video',
+          fab: false,
+          id: 'post3',
+          video: 'https://www.youtube.com/embed/jEAr7ThsYew'
+        },
+        {
+          title: 'Article',
+          fab: false,
+          id: 'post4'
+        }
       ],
       navs: [
-        { name: 'Home ', href: '#title', icon: 'home' },
-        { name: 'Post 1 ', href: '#post1', icon: 'info' },
-        { name: 'Post 2 ', href: '#post2', icon: 'link' },
-        { name: 'Post 3 ', href: '#post3', icon: 'video_library' }
+        { name: 'Creator', href: '#title', icon: 'assignment_ind' },
+        { name: 'About', href: '#post1', icon: 'assignment' },
+        { name: 'Quiz', href: '#post2', icon: 'assignment_turned_in' },
+        { name: 'Video', href: '#post3', icon: 'video_library' },
+        { name: 'Article', hrey: '#post4', icon: 'library_books' }
       ]
     }
   },
@@ -141,6 +173,8 @@ export default {
 
 <style media="screen">
 @import url('https://fonts.googleapis.com/css?family=Quicksand');
+@import url('https://fonts.googleapis.com/css?family=Permanent+Marker');
+@import url('https://fonts.googleapis.com/css?family=Indie+Flower');
 *{
   font-family: 'Quicksand', sans-serif;
 }
@@ -151,7 +185,6 @@ a {
   border-radius: 2em !important;
 }
 .video {
-  border-radius: 3em !important;
   z-index: 9;
 	position: relative;
 	padding-bottom: 56.25%; /* 16:9 */
@@ -263,6 +296,7 @@ html{
   }
 }
 #title {
+  font-family: 'Indie Flower', sans-serif;
   font-size: 3em;
   opacity: 0;
   animation: fadeInDown 1s ease 1 forwards;

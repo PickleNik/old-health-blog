@@ -12,14 +12,16 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 import Sharing from 'vue-social-sharing'
+import VueClipboard from 'vue-clipboard2'
 
+Vue.use(VueClipboard)
 Vue.use(Sharing)
 
 var VueScrollTo = require('vue-scrollto')
 Vue.use(VueScrollTo, {
   container: 'body',
-  duration: 333,
-  easing: 'ease',
+  duration: 700,
+  easing: 'ease-in-out',
   offset: 0,
   force: true,
   cancelable: true,
