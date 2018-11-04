@@ -11,7 +11,8 @@ export const store = new Vuex.Store({
   state: {
     user: null,
     loading: false,
-    error: false
+    error: false,
+    comments: []
   },
   mutations: {
     setUser (state, payload) {
@@ -23,22 +24,37 @@ export const store = new Vuex.Store({
     setError (state, payload) {
       state.error = payload
     },
-    addComment (state, payload) {
-      const src = payload.src
-      if (state.user.comments.findIndex(source => source === src) >= 0) {
-        return null
-      } else {
-        state.user.comments.push(src)
-        state.user.fbKeys[src.link] = payload.fbKey
-      }
-    },
-    removeComment (state, payload) {
-      const comments = state.user.comments
-      comments.splice(comments.findIndex(source => source === payload), 1)
-      Reflect.deleteProperty(state.user.fbKeys, payload.link)
+    setComments (state, payload) {
+      state.comments = payload
     }
   },
   actions: {
+    addComment ({commit}, payload) {
+      commit('setLoading', true)
+      firebase.database().ref('comments').push(payload)
+      .then(
+        commit('setLoading', false)
+      )
+      .catch(error => {
+        console.log(error)
+        commit('setLoading', false)
+        commit('setError', error)
+      })
+    },
+    getComments ({commit}) {
+      commit('setLoading', true)
+      firebase.database().ref('comments').once('value')
+      .then(data => {
+        console.log(data.val())
+        commit('setLoading', false)
+        commit('setComments', data.val())
+      })
+      .catch(error => {
+        console.log(error)
+        commit('setLoading', false)
+        commit('setError', error)
+      })
+    },
     userProvider ({commit}, payload) {
       commit('setLoading', true)
       commit('setError', false)
@@ -59,6 +75,7 @@ export const store = new Vuex.Store({
         })
         .catch(
           error => {
+            console.log(error)
             commit('setLoading', false)
             commit('setError', error.message)
           }
@@ -89,6 +106,9 @@ export const store = new Vuex.Store({
     },
     error (state) {
       return state.error
+    },
+    comments (state) {
+      return state.comments
     }
   }
 })

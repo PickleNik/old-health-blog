@@ -11,10 +11,10 @@
           </a>
         </v-layout>
       </v-flex>
-      <v-flex md3 lg2 class="zoom hidden-sm-and-down pa-4" style="position:fixed; z-index: 100; right:0; top:0;">
+      <v-flex md3 lg2 class="zoom pa-4" style="position:fixed; z-index: 100; right:0; top:0;">
         <v-tooltip bottom color="pink" v-if="!user"><span class="text--text">Log in with Google</span><v-btn class="ma-2" large slot="activator" color="pink" fab flat id="b1" @click="GoogleSignIn" :loading="loading"><v-icon large>fab fa-google</v-icon></v-btn></v-tooltip>
-        <v-tooltip bottom color="pink" v-if="user"><span class="text--text text-xs-center">{{ user.name }}<br><v-divider class="white my-2"></v-divider>Logout</span>
-          <v-avatar slot="activator" color="white" class="ma-2" @click="Logout" size="72">
+        <v-tooltip bottom color="pink" v-if="user"><span class="text--text text-xs-center">Logout</span>
+          <v-avatar slot="activator" class="ma-2" @click="Logout" size="72">
              <img :src="user.photo" alt="alt">
           </v-avatar>
         </v-tooltip>
@@ -30,9 +30,9 @@
         </v-flex>
         <v-flex xs12 sm12 md6 offset-md3 lg8 offset-lg2 class="post">
           <v-layout column>
-            <v-flex v-for="p in posts" :key="p.id" :id="p.id" class="my-4 px-4 round black">
-              <v-layout row class="py-4 pl-4">
-                <span class="grey--text pt-3" style="font-size: 2em; font-family: 'Indie Flower', sans-serif;">{{ p.title }}</span>
+            <v-flex v-for="p in posts" :key="p.id" :id="p.id" class="my-4 pa-4 round black">
+              <v-layout row class="pb-4">
+                <span class="pt-3 pink--text" style="font-size: 2em; font-family: 'Indie Flower', sans-serif;">{{ p.title }}</span>
                 <v-spacer></v-spacer>
                 <social-sharing inline-template
                   :url="'https://health-fair.firebaseapp.com#' + p.id"
@@ -81,9 +81,31 @@
               </v-layout>
               <v-divider></v-divider>
               <v-flex v-if="p.video" class="mt-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
-              <p v-if="p.text" class="pt-2 px-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
+              <p v-if="p.text" class="pt-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
               <a v-if="p.links" v-for="link in p.links" :key="link.title" :href="link.href" target="_blank"><v-btn small round flat class="link link--kukuri"><v-icon left class="pink--text">link</v-icon>{{ link.title }}</v-btn></a>
-              <v-text-field class="pt-4" color="pink" placeholder="Comment" background-color="grey darken-3" solo prepend-inner-icon="comment" append-icon="send"></v-text-field>
+              <v-list two-line v-if="user" class="round mt-2 pt-2">
+                <template v-for="comment in comments" v-if="comment.post === p.id">
+                  <v-list-tile avatar>
+                    <v-list-tile-avatar>
+                      <img :src="comment.photo">
+                    </v-list-tile-avatar>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-html="comment.name"></v-list-tile-title>
+                      <v-list-tile-sub-title v-html="comment.text"></v-list-tile-sub-title>
+                    </v-list-tile-content>
+                    <v-list-tile-action v-if="comment.creator === user.uid" class="pl-4">
+                      <v-btn icon flat small color="pink"><v-icon>delete</v-icon></v-btn>
+                    </v-list-tile-action>
+                  </v-list-tile>
+                  <v-divider inset></v-divider>
+                </template>
+                <v-text-field v-if="user" class="mx-3" v-model="p.comment" color="pink" placeholder="Comment" background-color="grey darken-3 pl-0 elevation-0" solo>
+                  <v-avatar slot="prepend-inner" class="mr-2" size="50">
+                    <img :src="user.photo" alt="alt">
+                  </v-avatar>
+                  <v-btn icon flat color="pink" class="mr-0" slot="append" @click="addComment(p.comment, p.id), p.comment = ''"><v-icon>send</v-icon></v-btn>
+                </v-text-field>
+              </v-list>
             </v-flex>
           </v-layout>
         </v-flex>
@@ -100,7 +122,6 @@ export default {
   data () {
     return {
       direction: 'bottom',
-      status: false,
       posts: [
         {
           title: 'What is Molly',
@@ -113,6 +134,7 @@ export default {
         },
         {
           title: 'Quiz',
+          comment: '',
           fab: false,
           id: 'post2',
           text: 'Tip of the day: Ecstasy, in fact, is a term for Molly which has been chemically altered with other additives, such as amphetamine, caffeine etc.',
@@ -125,12 +147,14 @@ export default {
         },
         {
           title: 'Video',
+          comment: '',
           fab: false,
           id: 'post3',
           video: 'https://www.youtube.com/embed/jEAr7ThsYew'
         },
         {
           title: 'Article',
+          comment: '',
           fab: false,
           id: 'post4'
         }
@@ -160,15 +184,29 @@ export default {
     },
     loading () {
       return this.$store.getters.loading
+    },
+    comments () {
+      return this.$store.getters.comments
     }
+  },
+  created () {
+    this.$store.dispatch('getComments')
   },
   methods: {
     GoogleSignIn () {
       this.$store.dispatch('userProvider', new firebase.auth.GoogleAuthProvider())
-      .then(this.status = true)
     },
     Logout () {
       this.$store.dispatch('userLogout')
+    },
+    addComment (text, id) {
+      if (!this.inCart) {
+        this.$store.dispatch('addComment', {text: text, post: id, creator: this.user.id, name: this.user.name, photo: this.user.photo})
+        this.$store.dispatch('getComments')
+      }
+    },
+    removeComment () {
+      this.$store.dispatch('removeComment', {text: this.comment})
     }
   }
 }
@@ -228,7 +266,7 @@ body{
   filter: brightness(30%);
 }
 .round{
-  border-radius: 3em;
+  border-radius: 2em;
 }
 ::-webkit-scrollbar{
   width: 0;
