@@ -41,6 +41,22 @@ export const store = new Vuex.Store({
         commit('setError', error)
       })
     },
+    deleteComment ({commit}, payload) {
+      commit('setLoading', true)
+      firebase.database().ref('comments').orderByChild('text').equalTo(payload)
+        .once('value').then(function (snapshot) {
+          commit('setLoading', false)
+          snapshot.forEach(function (childSnapshot) {
+            // remove each child
+            firebase.database().ref('comments').child(childSnapshot.key).remove()
+          })
+        })
+        .catch(error => {
+          console.log(error)
+          commit('setLoading', false)
+          commit('setError', error)
+        })
+    },
     getComments ({commit}) {
       commit('setLoading', true)
       firebase.database().ref('comments').once('value')
@@ -57,12 +73,11 @@ export const store = new Vuex.Store({
     },
     userProvider ({commit}, payload) {
       commit('setLoading', true)
-      commit('setError', false)
       firebase.auth().signInWithPopup(payload)
         .then(result => {
+          commit('setLoading', false)
           // eslint-disable-next-line
           user => {
-            commit('setLoading', false)
             const newUser = {
               id: user.uid,
               email: user.email,
@@ -82,6 +97,7 @@ export const store = new Vuex.Store({
         )
     },
     userAuto ({commit}, payload) {
+      commit('setLoading', false)
       commit('setUser', {
         id: payload.uid,
         email: payload.email,

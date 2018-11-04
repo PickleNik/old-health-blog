@@ -80,10 +80,10 @@
                 </social-sharing>
               </v-layout>
               <v-divider></v-divider>
-              <v-flex v-if="p.video" class="mt-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
+              <v-flex v-if="p.video" class="my-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
               <p v-if="p.text" class="pt-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
               <a v-if="p.links" v-for="link in p.links" :key="link.title" :href="link.href" target="_blank"><v-btn small round flat class="link link--kukuri"><v-icon left class="pink--text">link</v-icon>{{ link.title }}</v-btn></a>
-              <v-list two-line v-if="user" class="round mt-2 pt-2">
+              <v-list two-line v-if="user" class="round mt-2 pt-3">
                 <template v-for="comment in comments" v-if="comment.post === p.id">
                   <v-list-tile avatar>
                     <v-list-tile-avatar>
@@ -93,8 +93,8 @@
                       <v-list-tile-title v-html="comment.name"></v-list-tile-title>
                       <v-list-tile-sub-title v-html="comment.text"></v-list-tile-sub-title>
                     </v-list-tile-content>
-                    <v-list-tile-action v-if="comment.creator === user.uid" class="pl-4">
-                      <v-btn icon flat small color="pink"><v-icon>delete</v-icon></v-btn>
+                    <v-list-tile-action v-if="comment.creator == user.id || user.id == 'N9KttaK3lcfjPAtbGG9c5wIS4Bj1'" class="pr-4">
+                      <v-btn icon flat small color="pink" @click="deleteComment(comment.text)" :loading="loading"><v-icon>delete</v-icon></v-btn>
                     </v-list-tile-action>
                   </v-list-tile>
                   <v-divider inset></v-divider>
@@ -103,7 +103,7 @@
                   <v-avatar slot="prepend-inner" class="mr-2" size="50">
                     <img :src="user.photo" alt="alt">
                   </v-avatar>
-                  <v-btn icon flat color="pink" class="mr-0" slot="append" @click="addComment(p.comment, p.id), p.comment = ''"><v-icon>send</v-icon></v-btn>
+                  <v-btn icon flat color="pink" class="mr-0" slot="append" @click="addComment(p.comment, p.id), p.comment = ''" :loading="loading" :disabled="p.comment == ''"><v-icon>send</v-icon></v-btn>
                 </v-text-field>
               </v-list>
             </v-flex>
@@ -200,13 +200,12 @@ export default {
       this.$store.dispatch('userLogout')
     },
     addComment (text, id) {
-      if (!this.inCart) {
-        this.$store.dispatch('addComment', {text: text, post: id, creator: this.user.id, name: this.user.name, photo: this.user.photo})
-        this.$store.dispatch('getComments')
-      }
+      this.$store.dispatch('addComment', {text: text, post: id, creator: this.user.id, name: this.user.name, photo: this.user.photo})
+      .then(this.$store.dispatch('getComments'))
     },
-    removeComment () {
-      this.$store.dispatch('removeComment', {text: this.comment})
+    deleteComment (text) {
+      this.$store.dispatch('deleteComment', text)
+      .then(this.$store.dispatch('getComments'))
     }
   }
 }
@@ -241,10 +240,6 @@ a {
 	left: 0;
 	width: 100%;
 	height: 100%;
-}
-iframe {
-    border: 2em solid #fff;
-    border-radius: 2em !important;
 }
 body{
   overflow-y: scroll;
