@@ -154,9 +154,14 @@ export default {
         },
         {
           title: 'Article',
+          text: 'Article By Peter Hess on June 19, 2018. Anyone who took DARE in elementary school probably heard about how taking too much MDMA (aka ecstasy) will put holes in your brain. And in this, the year of our lord 2018, we all know that’s bullshit. But that begs the question: How harmful can MDMA actually be for your brain?',
           comment: '',
           fab: false,
-          id: 'post4'
+          id: 'post4',
+          links: [
+            { title: 'Full Article', href: 'https://www.inverse.com/article/46147-does-ecstasy-really-put-holes-in-your-brain-and-affect-serotonin' },
+            { title: 'Peter Hess', href: 'https://www.inverse.com/user/216-peter-hess' }
+          ]
         }
       ],
       navs: [
