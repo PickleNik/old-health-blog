@@ -47,7 +47,7 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  created () {
+  beforeCreate () {
     firebase.initializeApp({
       apiKey: 'AIzaSyC4_Eg8Rcx7PcVlw48YvV2Qc4YBZC6lEIE',
       authDomain: 'health-fair.firebaseapp.com',

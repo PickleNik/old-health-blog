@@ -168,13 +168,6 @@ export default {
       ]
     }
   },
-  watch: {
-    user (value) {
-      if (value !== null && value !== undefined) {
-        this.status = true
-      } else this.status = false
-    }
-  },
   computed: {
     user () {
       return this.$store.getters.user
