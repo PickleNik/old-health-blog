@@ -59,7 +59,7 @@ export const store = new Vuex.Store({
     },
     getComments ({commit}) {
       commit('setLoading', true)
-      firebase.database().ref('comments').on('value')
+      firebase.database().ref('comments').once('value')
       .then(data => {
         console.log(data.val())
         commit('setLoading', false)

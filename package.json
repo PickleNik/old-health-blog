@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "firebase": "^5.5.5",
+    "typed.js": "^2.0.9",
     "vue": "^2.5.2",
     "vue-clipboard2": "^0.2.1",
     "vue-scrollto": "^2.13.0",

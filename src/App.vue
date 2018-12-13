@@ -80,10 +80,18 @@
                 </social-sharing>
               </v-layout>
               <v-divider></v-divider>
+
               <v-flex v-if="p.video" class="my-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
+
+              <p v-if="p.typed" class="pt-2 text-xs-justify" style="font-size: 1.5em;" id="greeting"></p>
+
               <p v-if="p.text" class="pt-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
+
+              <v-img v-if="p.image" :src="p.image" :lazy-src="p.image" class="mx-auto round grey"></v-img>
+
               <a v-if="p.links" v-for="link in p.links" :key="link.title" :href="link.href" target="_blank"><v-btn small round flat class="link link--kukuri"><v-icon left class="pink--text">link</v-icon>{{ link.title }}</v-btn></a>
-              <v-list two-line v-if="user" class="round mt-2 pt-3">
+
+              <v-list three-line v-if="user" class="round mt-2 pt-3">
                 <template v-for="comment in comments" v-if="comment.post === p.id">
                   <v-list-tile avatar>
                     <v-list-tile-avatar>
@@ -99,7 +107,7 @@
                   </v-list-tile>
                   <v-divider inset></v-divider>
                 </template>
-                <v-text-field v-if="user" class="mx-3" v-model="p.comment" color="pink" placeholder="Comment" background-color="grey darken-3 pl-0 elevation-0" solo>
+                <v-text-field  v-on:keypress.enter="addComment(p.comment, p.id), p.comment = ''" :loading="loading" counter="200" v-if="user" class="mx-3" v-model="p.comment" color="pink" placeholder="Comment" background-color="grey darken-3 pl-0 py-3 elevation-0" solo>
                   <v-avatar slot="prepend-inner" class="mr-2" size="50">
                     <img :src="user.photo" alt="alt">
                   </v-avatar>
@@ -115,19 +123,21 @@
 </template>
 
 <script>
+import Typed from 'typed.js'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
 export default {
   data () {
     return {
+      typedOptions: ['Hi there', '3,4-Methyl​enedioxy​methamphetamine(or MDMA), commonly known as ecstasy, is a psychoactive drug primarily used as a recreational drug. The desired effects include altered sensations and increased energy, empathy, and pleasure. When taken by mouth, effects begin after 30–45 minutes and last 3–6 hours.'],
       direction: 'bottom',
       posts: [
         {
           title: 'What is Molly',
+          typed: true,
           fab: false,
           id: 'post1',
-          text: '3,4-Methyl​enedioxy​methamphetamine(or MDMA), commonly known as ecstasy, is a psychoactive drug primarily used as a recreational drug. The desired effects include altered sensations and increased energy, empathy, and pleasure. When taken by mouth, effects begin after 30–45 minutes and last 3–6 hours.',
           links: [
             { title: 'Outline', href: 'https://docs.google.com/document/d/1iZa7Gf0W3FIoVVw-vEPF_gbyCfb3pTEAJkVRuuvI--A/edit?usp=sharing' }
           ]
@@ -154,9 +164,20 @@ export default {
         },
         {
           title: 'Article',
+          text: 'Developed in 1914 as an appetite suppressant, MDMA gained popularity in the 1980s with young adults at large music festivals and all-night dance parties or raves. \n The user experiences feelings of euphoria, increased energy, intimacy and emotional warmth, sensitivity to touch, and a distortion of time and of the senses. \n Ecstasy is frequently taken with other illegal drugs, and pills sold as MDMA on the street often contain additives. These factors can contribute to serious, and sometimes fatal, health effects. \n MDMA can also be addictive, and research suggests that long-term cognitive problems may develop in some users.',
           comment: '',
           fab: false,
-          id: 'post4'
+          id: 'post4',
+          links: [
+            { title: 'Full Article', href: 'https://www.medicalnewstoday.com/articles/297064.php' }
+          ]
+        },
+        {
+          title: 'Post 5',
+          comment: '',
+          image: 'https://media.giphy.com/media/pWP6AQg2KMc2Q/giphy.gif',
+          fab: false,
+          id: 'post5'
         }
       ],
       navs: [
@@ -167,6 +188,18 @@ export default {
         { name: 'Article', href: '#post4', icon: 'library_books' }
       ]
     }
+  },
+  mounted () {
+    new Typed('#greeting', {// eslint-disable-line no-new
+      strings: this.typedOptions,
+      loop: true,
+      typeSpeed: 20,
+      backSpeed: 10,
+      startDelay: 6000,
+      backDelay: 2000,
+      smartBackspace: true,
+      showCursor: false
+    })
   },
   computed: {
     user () {
@@ -193,8 +226,10 @@ export default {
       this.$store.dispatch('userLogout')
     },
     addComment (text, id) {
-      this.$store.dispatch('addComment', {text: text, post: id, creator: this.user.id, name: this.user.name, photo: this.user.photo})
-      .then(this.$store.dispatch('getComments'))
+      if (text !== '') {
+        this.$store.dispatch('addComment', {text: text, post: id, creator: this.user.id, name: this.user.name, photo: this.user.photo})
+        .then(this.$store.dispatch('getComments'))
+      }
     },
     deleteComment (text) {
       this.$store.dispatch('deleteComment', text)
