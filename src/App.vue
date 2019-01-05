@@ -81,9 +81,9 @@
               </v-layout>
               <v-divider></v-divider>
 
-              <v-flex v-if="p.video" class="my-4 video"><iframe :src="p.video"  allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
+              <v-flex v-if="p.video" class="my-4 video"><iframe :src="p.video" frameborder="0" style="border-radius: 3em !important;" allow="autoplay; encrypted-media" allowfullscreen></iframe></v-flex>
 
-              <p v-if="p.typed" class="pt-2 text-xs-justify" style="font-size: 1.5em;" id="greeting"></p>
+              <p v-if="p.typed" class="pt-2 text-xs-justify" style="font-size: 1.5em; min-height: 4.5em;" id="greeting"></p>
 
               <p v-if="p.text" class="pt-2 text-xs-justify" style="font-size: 1.5em;">{{ p.text }}</p>
 
@@ -177,7 +177,8 @@ export default {
           comment: '',
           image: 'https://media.giphy.com/media/pWP6AQg2KMc2Q/giphy.gif',
           fab: false,
-          id: 'post5'
+          id: 'post5',
+          video: 'https://www.youtube.com/embed/_sXhbieSzZs'
         }
       ],
       navs: [
@@ -192,10 +193,10 @@ export default {
   mounted () {
     new Typed('#greeting', {// eslint-disable-line no-new
       strings: this.typedOptions,
-      loop: true,
-      typeSpeed: 20,
+      loop: false,
+      typeSpeed: 50,
       backSpeed: 10,
-      startDelay: 6000,
+      startDelay: 3000,
       backDelay: 2000,
       smartBackspace: true,
       showCursor: false
@@ -256,6 +257,12 @@ a {
   border-radius: 2em !important;
 }
 .video {
+  -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%); /*ios 7 border-radius-bug */
+  -webkit-transform: rotate(0.000001deg); /*mac os 10.6 safari 5 border-radius-bug */
+  -webkit-border-radius: 3em;
+  -moz-border-radius: 3em;
+  border-radius: 3em;
+  overflow: hidden;
   z-index: 9;
 	position: relative;
 	padding-bottom: 57%; /* 16:9 */
