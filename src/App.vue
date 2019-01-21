@@ -174,10 +174,23 @@ export default {
         },
         {
           title: 'Post 5',
+          text: 'Local Resources or where to get addiction treatment:',
+          comment: '',
+          fab: false,
+          id: 'post5',
+          links: [
+            { title: 'The Freedom Center', href: 'https://www.thefreedomcenter.com' },
+            { title: 'Banyan Treatment Center', href: 'https://help.banyantreatmentcenter.com' },
+            { title: 'Transformations Treatment Center', href: 'https://www.transformationstreatment.center' },
+            { title: 'Map & More', href: 'https://www.google.com/search?q=ecstasy+addiction+treatment+MD&npsic=0&rflfq=1&rlha=0&rllag=39011768,-77118557,13142&tbm=lcl&ved=2ahUKEwiNrdX7yf_fAhWNt1kKHa6eAfoQtgN6BAgAEAQ&tbs=lrf:!2m1!1e2!2m1!1e3!2m1!1e16!3sIAE,lf:1,lf_ui:2&rldoc=1#rlfi=hd:;si:;mv:!1m2!1d39.5497361!2d-75.8523759!2m2!1d38.672478!2d-77.25952389999999;tbs:lrf:!2m1!1e2!2m1!1e3!2m1!1e16!3sIAE,lf:1,lf_ui:2' }
+          ]
+        },
+        {
+          title: 'Post 6',
           comment: '',
           image: 'https://media.giphy.com/media/pWP6AQg2KMc2Q/giphy.gif',
           fab: false,
-          id: 'post5',
+          id: 'post6',
           video: 'https://www.youtube.com/embed/_sXhbieSzZs'
         }
       ],
