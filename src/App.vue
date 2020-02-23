@@ -173,7 +173,7 @@ export default {
           ]
         },
         {
-          title: 'Post 5',
+          title: 'ADVOCACY',
           text: 'Local Resources or where to get addiction treatment:',
           comment: '',
           fab: false,
@@ -186,9 +186,9 @@ export default {
           ]
         },
         {
-          title: 'Post 6',
+          title: 'Video',
           comment: '',
-          image: 'https://media.giphy.com/media/pWP6AQg2KMc2Q/giphy.gif',
+          image: 'https://i.pinimg.com/originals/8f/f4/47/8ff44710fdfa2222fcf6a3e29f1419ef.gif',
           fab: false,
           id: 'post6',
           video: 'https://www.youtube.com/embed/_sXhbieSzZs'
@@ -199,7 +199,9 @@ export default {
         { name: 'About', href: '#post1', icon: 'assignment' },
         { name: 'Quiz', href: '#post2', icon: 'assignment_turned_in' },
         { name: 'Video', href: '#post3', icon: 'video_library' },
-        { name: 'Article', href: '#post4', icon: 'library_books' }
+        { name: 'Article', href: '#post4', icon: 'library_books' },
+        { name: 'ADVOCACY', href: '#post4', icon: 'location_on' },
+        { name: 'Video', href: '#post4', icon: 'video_library' }
       ]
     }
   },
